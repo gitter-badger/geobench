@@ -1,0 +1,38 @@
+{
+	"name": "geobench",
+	"description": "Toolkit for Maps",
+	"version": "0.1.0",
+	"type": "wordpress-plugin",
+	"keywords": [
+		"wordpress",
+		"wordpress-plugin",
+		"geo",
+		"gis",
+		"geodata",
+		"geo-data",
+		"map",
+		"maps",
+		"google-maps",
+		"cartography"
+	],
+	"homepage": "https://github.com/geobench/geobench",
+	"license": "GPLv2.0+",
+	"authors": [
+		{
+			"name": "Team GeoBench",
+			"email": "hey@geoben.ch",
+			"homepage": "https://geoben.ch/",
+			"role": "Developer"
+		}
+	],
+    "minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4"
+	},
+  "require-dev": {
+    "antecedent/patchwork": "1.2.*",
+    "phpunit/phpunit"     : "*@stable",
+    "brianium/paratest"   : "dev-master",
+    "10up/wp_mock"        : "dev-master"
+  }
+}
