@@ -7,7 +7,7 @@ An extensible toolkit to manage geo data and maps with WordPress.
 Find out more on:
 
 * [Geobench website](http://geoben.ch/) - (**coming soon**)
-* [Slack channel](https://geobench.slack.com/) - [(ask for invitation)](mailto:fulvio.notarstefano@gmail.com])
+* [Slack channel](https://geobench.slack.com/) - [(ask for invitation)](mailto:fulvio.notarstefano@gmail.com)
 * [Trello board](https://trello.com/b/oUkhpkmd)
 
 Requirements:
