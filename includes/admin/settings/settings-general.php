@@ -26,7 +26,7 @@ class General_Settings extends Settings_Page {
 	public function __construct() {
 		$this->id = 'general_settings';
 		$this->label = __( 'General', 'geobench' );
-		$this->description = __( 'General settings are made of this...', 'geobench' );
+		$this->description = __( 'General settings.', 'geobench' );
 		$this->sections = $this->add_sections();
 		$this->fields = $this->add_fields();
 		parent::__construct();
@@ -41,7 +41,9 @@ class General_Settings extends Settings_Page {
 		return apply_filters( 'geobench_add_' . $this->id .'_sections', array(
 			'content_integration' => array(
 				'title' =>  __( 'Content integration', 'geobench' ),
-				'description' => __( 'This is a description' )
+				'description' => __(
+					'GeoBench can attach geo data to other content. You can choose here which WordPress items should integrate with GeoBench.',
+					'geobench' )
 			)
 		) );
 	}
@@ -98,7 +100,7 @@ class General_Settings extends Settings_Page {
 								'description' => sprintf( __( 'Select which type of %s should carry geo data.', 'geobench' ), strtolower( $content_groups[ $content_group ] ) ),
 								'options'     => $options,
 								'default'     => $content_group == 'posts' ? 'post' : '',
-								'value'       => isset( $values[$section][$content_group] ) ? $values[$section][$content_group] : false
+								'value'       => isset( $values[$section][$content_group] ) ? $values[$section][$content_group] : ''
 							);
 						}
 					}

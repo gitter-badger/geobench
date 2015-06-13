@@ -81,7 +81,10 @@ class Install {
 
 								foreach ( $section['fields'] as $key => $value ) {
 
-									$default[$section_id][$key] = isset( $value['value'] ) ? $value['value'] : ( isset( $value['default'] ) ? isset( $value['default'] ) : '' );
+									$saved_value   = isset( $value['value'] )   ? $value['value']   : '';
+									$default_value = isset( $value['default'] ) ? $value['default'] : '';
+
+									$default[$section_id][$key] = $saved_value ? $saved_value : $default_value;
 
 								} // loop fields for saved values, fallback to default values
 
@@ -95,7 +98,7 @@ class Install {
 
 			} // are there settings sections?
 
-			add_option( 'geobench_' . $page_id, $default, true );
+		    add_option( 'geobench_' . $page_id, $default, '', true );
 
 		} // loop settings
 

@@ -21,21 +21,27 @@ abstract class Field {
 	/**
 	 * Context.
 	 *
+	 * Helper argument to alter the field markup according to context where it's printed.
+	 *
 	 * @access public
-	 * @var string
+	 * @var string Either 'metabox', 'settings' or empty.
 	 */
 	public $context;
 
 	/**
 	 * Field type (or subtype).
 	 *
+	 * Any registered field type.
+	 *
 	 * @access public
-	 * @var string
+	 * @var string For example 'text', 'hidden', 'select', 'textarea'...
 	 */
 	public $type;
 
 	/**
 	 * Field name.
+	 *
+	 * Argument for the field name attribute.
 	 *
 	 * @access public
 	 * @var string
@@ -45,6 +51,8 @@ abstract class Field {
 	/**
 	 * Field ID.
 	 *
+	 * Argument for the field ID.
+	 *
 	 * @access public
 	 * @var string
 	 */
@@ -52,6 +60,8 @@ abstract class Field {
 
 	/**
 	 * Field label.
+	 *
+	 * Text to be passed as the field label.
 	 *
 	 * @access public
 	 * @var string
@@ -61,6 +71,8 @@ abstract class Field {
 	/**
 	 * CSS classes.
 	 *
+	 * A string with one or more CSS classes (optional).
+	 *
 	 * @access public
 	 * @var string
 	 */
@@ -68,6 +80,8 @@ abstract class Field {
 
 	/**
 	 * CSS styles.
+	 *
+	 * A string with CSS styles (optional).
 	 *
 	 * @access public
 	 * @var string
@@ -77,13 +91,17 @@ abstract class Field {
 	/**
 	 * Description.
 	 *
+	 * Additional text information printed next to the field.
+	 *
 	 * @access public
 	 * @var string
 	 */
 	public $description;
 
 	/**
-	 * Tooltip information.
+	 * Tooltip text.
+	 *
+	 * If used a tooltip markup will be generated with this text.
 	 *
 	 * @access public
 	 * @var string|bool
@@ -93,6 +111,8 @@ abstract class Field {
 	/**
 	 * Attributes.
 	 *
+	 * Any custom attributes (for example data attributes and their value).
+	 *
 	 * @access public
 	 * @var array|string
 	 */
@@ -100,6 +120,8 @@ abstract class Field {
 
 	/**
 	 * Placeholder.
+	 *
+	 * A placeholder text, if the input supports it.
 	 *
 	 * @access public
 	 * @var string
@@ -109,13 +131,17 @@ abstract class Field {
 	/**
 	 * Options.
 	 *
+	 * For fields having multiple choices, options can be passed as an associative array.
+	 *
 	 * @access public
-	 * @var array
+	 * @var array Associative array with option key for array key and label vor array value.
 	 */
 	public $options;
 
 	/**
 	 * Value.
+	 *
+	 * The saved option from database should be passed for this argument.
 	 *
 	 * @access public
 	 * @var string
@@ -125,13 +151,17 @@ abstract class Field {
 	/**
 	 * Default value.
 	 *
+	 * Upon activation the option can be saved with this value.
+	 *
 	 * @access public
 	 * @var string
 	 */
 	public $default;
 
 	/**
-	 * Construct the input.
+	 * Construct the field.
+	 *
+	 * Escapes and sets every field property.
 	 *
 	 * @param array $field Field data.
 	 */
@@ -185,7 +215,9 @@ abstract class Field {
 	 * @return array|string|bool Escaped value.
 	 */
 	private function esc_maybe_array( $maybe_array ) {
-		if ( is_array( $maybe_array ) ) {
+		if ( is_null( $maybe_array ) ) {
+			return '';
+		} elseif ( is_array( $maybe_array ) ) {
 			return array_map( 'esc_attr', $maybe_array );
 		} else {
 			return is_bool( $maybe_array ) ? $maybe_array : esc_attr( $maybe_array );
