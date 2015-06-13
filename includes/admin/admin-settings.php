@@ -136,15 +136,16 @@ class Settings {
 
 										if ( isset( $field['id'] ) && isset( $field['type'] ) ) {
 
-											$field_object = GB()->field_factory->get_field_object( $field, $field['type'], false );
-
-											add_settings_field(
-												$field['id'],
-												isset( $field['title'] ) ? $field['title'] : '',
-												$field_object && ! is_null( $field_object ) ? array( $field_object, 'print_field' ) : '',
-												'geobench_' . $page_id,
-												$section_id
-											);
+											$field_object = GB()->field_factory->get_field_object( $field, $field['type'], true );
+											if ( $field_object instanceof Field ) {
+												add_settings_field(
+													$field['id'],
+													isset( $field['title'] ) ? $field['title'] : '',
+													array( $field_object, 'print_field' ),
+													'geobench_' . $page_id,
+													$section_id
+												);
+											}
 
 										} // is field valid
 
@@ -158,8 +159,8 @@ class Settings {
 
 							register_setting(
 								'geobench_' . $page_id,
-								$section_id,
-								$page instanceof Settings_Page ? array( $page, 'register_setting_callback' ) : ''
+								'geobench_' . $page_id,
+								$page instanceof Settings_Page ? array( $page, 'validate' ) : ''
 							);
 
 						} // loop sections
@@ -184,48 +185,51 @@ class Settings {
 	public static function output_page( $current_tab = 'general_settings' ) {
 
 		global $current_tab;
-
-		do_action( 'geobench_settings_start' );
-
-		// Include settings pages
-		$settings_pages = self::get_settings();
-
 		// Get current tab/section
 		$current_tab = empty( $_GET['tab'] ) ? 'general_settings' : sanitize_title( $_GET['tab'] );
+
+		do_action( 'geobench_settings_start' );
 
 		// Print settings page, tabbed navigation, sections and fields
 		?>
 		<div class="wrap geobench">
-			<form method="<?php echo esc_attr( apply_filters( 'geobench_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>" id="mainform" action="" enctype="multipart/form-data">
-
-				<div class="icon32 icon32-geobench-settings" id="icon-geobench"><br /></div>
-
-				<h2 class="nav-tab-wrapper geobench-nav-tab-wrapper">
-					<?php
-
-					// Get tabs for the settings page
-					if ( $settings_pages && is_array( $settings_pages ) ) {
-						foreach ( $settings_pages as $id => $settings ) {
-							$name  = isset( $id ) ? $id : '';
-							$label = isset( $settings['label'] ) ? $settings['label'] : '';
-							echo '<a href="' . admin_url( 'admin.php?page=geobench_settings&tab=' . $name ) . '" class="nav-tab ' . ( $current_tab == $name ? 'nav-tab-active' : '' ) . '">' . $label . '</a>';
-						}
-					}
-
-					do_action( 'geobench_settings_tabs' );
-
-					?>
-				</h2>
+			<form
+				id="geobench-settings-form"
+				method="<?php echo esc_attr( apply_filters( 'geobench_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>"
+				action="options.php"
+				>
+				<div class="icon32 icon32-geobench-settings" id="icon-geobench">
+					<br />
+				</div>
 				<?php
 
-				settings_errors();
+				// Include settings pages
+				$settings_pages = self::get_settings();
 
 				if ( $settings_pages && is_array( $settings_pages ) ) {
-					foreach ( $settings_pages as $section => $contents ) {
-						if ( $section === $current_tab ) {
+
+					echo '<h2 class="nav-tab-wrapper geobench-nav-tab-wrapper">';
+
+						// Get tabs for the settings page
+						if ( $settings_pages && is_array( $settings_pages ) ) {
+							foreach ( $settings_pages as $id => $settings ) {
+								$name  = isset( $id ) ? $id : '';
+								$label = isset( $settings['label'] ) ? $settings['label'] : '';
+								echo '<a href="' . admin_url( 'admin.php?page=geobench_settings&tab=' . $name ) . '" class="nav-tab ' . ( $current_tab == $name ? 'nav-tab-active' : '' ) . '">' . $label . '</a>';
+							}
+						}
+
+						do_action( 'geobench_settings_tabs' );
+
+					echo '</h2>';
+
+					settings_errors();
+
+					foreach ( $settings_pages as $page_id => $contents ) {
+						if ( $page_id === $current_tab ) {
 							echo isset( $contents['description'] ) ? '<p>' . $contents['description'] . '</p>' : '';
-							settings_fields( 'geobench_' . $current_tab );
-							do_settings_sections( 'geobench_' . $current_tab );
+							settings_fields( 'geobench_' . $page_id );
+							do_settings_sections( 'geobench_' . $page_id );
 						}
 					}
 				}
@@ -233,7 +237,6 @@ class Settings {
 				submit_button();
 
 				?>
-
 			</form>
 		</div>
 		<?php

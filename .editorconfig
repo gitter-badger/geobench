@@ -1,9 +1,12 @@
-# This file is for unifying the coding style for different editors and IDEs
-# editorconfig.org
-
-# WordPress Coding Standards
+#
+# .editorconfig
+#
+# This file is for unifying the coding style for different editors and IDEs:
+# http://editorconfig.org
+#
+# WordPress Coding Standards:
 # http://make.wordpress.org/core/handbook/coding-standards/
-
+#
 root = true
 
 [*]
@@ -15,7 +18,6 @@ indent_style = tab
 indent_size = 4
 
 [*.{md,sass,scss,less}]
-insert_final_newline = true
 indent_style = space
 indent_size = 2
 
@@ -25,7 +27,8 @@ indent_style = space
 indent_size = 2
 
 [*.{txt,md}]
+insert_final_newline = false
 indent_style = space
 indent_size = 2
-end_of_line = crlf
 trim_trailing_whitespace = false
+end_of_line = crlf

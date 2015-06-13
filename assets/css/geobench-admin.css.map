@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEE,mCAA0B;EACxB,KAAK,EAAE,GAAG;EACV,SAAS,EAAE,KAAK;EAChB,SAAS,EAAE,KAAK;AAKhB,wBAAM;EACJ,UAAU,EAAE,IAAI;AAGlB,wCAAsB;EACpB,aAAa,EAAE,CAAC",
+"sources": ["sass/geobench-admin.scss"],
+"names": [],
+"file": "geobench-admin.css"
+}

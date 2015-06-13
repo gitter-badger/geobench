@@ -2,7 +2,9 @@ module.exports = function( grunt ) {
 
 	// Project configuration
 	grunt.initConfig( {
+
 		pkg:    grunt.file.readJSON( 'package.json' ),
+
 		concat: {
 			options: {
 				stripBanners: true,
@@ -19,6 +21,7 @@ module.exports = function( grunt ) {
 				dest: 'assets/js/geobench.js'
 			}
 		},
+
 		jshint: {
 			all: [
 				'Gruntfile.js',
@@ -26,6 +29,7 @@ module.exports = function( grunt ) {
 				'assets/js/test/**/*.js'
 			]
 		},
+
 		uglify: {
 			all: {
 				files: {
@@ -43,7 +47,7 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		
+
 		sass:   {
 			options: {
 				precision: 2
@@ -54,19 +58,18 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		
-		
+
 		autoprefixer: {
 			dist: {
 				options: {
 					browsers: [ 'last 1 version', '> 1%', 'ie 8' ]
 				},
-				files: { 
+				files: {
 					'assets/css/geobench.css': [ 'assets/css/geobench.css' ]
 				}
 			}
 		},
-		
+
 		cssmin: {
 			options: {
 				banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
@@ -86,6 +89,7 @@ module.exports = function( grunt ) {
 				ext: '.min.css'
 			}
 		},
+
 		watch:  {
 			livereload: {
 				files: ['assets/css/*.css'],
@@ -93,7 +97,7 @@ module.exports = function( grunt ) {
 					livereload: true
 				}
 			},
-			styles: { 
+			styles: {
 				files: ['assets/css/sass/**/*.scss'],
 				tasks: ['sass', 'autoprefixer', 'cssmin'],
 				options: {
@@ -108,48 +112,7 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		clean: {
-			main: ['release/<%= pkg.version %>']
-		},
-		copy: {
-			// Copy the plugin to a versioned release directory
-			main: {
-				src:  [
-					'**',
-					'!**/.*',
-					'!**/readme.md',
-					'!node_modules/**',
-					'!vendor/**',
-					'!tests/**',
-					'!release/**',
-					'!assets/css/sass/**',
-					'!assets/css/src/**',
-					'!assetsjs/src/**',
-					'!images/src/**',
-					'!bootstrap.php',
-					'!bower.json',
-					'!composer.json',
-					'!composer.lock',
-					'!Gruntfile.js',
-					'!package.json',
-					'!phpunit.xml',
-					'!phpunit.xml.dist'
-				],
-				dest: 'release/<%= pkg.version %>/'
-			}
-		},
-		compress: {
-			main: {
-				options: {
-					mode: 'zip',
-					archive: './release/gb.<%= pkg.version %>.zip'
-				},
-				expand: true,
-				cwd: 'release/<%= pkg.version %>/',
-				src: ['**/*'],
-				dest: 'gb/'
-			}
-		},
+
 		wp_readme_to_markdown: {
 			readme: {
 				files: {
@@ -157,6 +120,7 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
+
 		phpunit: {
 			classes: {
 				dir: 'tests/phpunit/'
@@ -167,20 +131,19 @@ module.exports = function( grunt ) {
 				colors: true
 			}
 		},
+
 		qunit: {
 			all: ['tests/qunit/**/*.html']
 		}
+
 	} );
 
 	// Load tasks
 	require('load-grunt-tasks')(grunt);
 
 	// Register tasks
-	
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'wp_readme_to_markdown' ] );
-	
 
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
+	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'wp_readme_to_markdown' ] );
 
 	grunt.registerTask( 'test', ['phpunit', 'qunit'] );
 

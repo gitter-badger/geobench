@@ -127,29 +127,18 @@ abstract class Settings_Page {
 		$sections = isset( $callback->sections ) ? $callback->sections : '';
 		$description = isset( $sections[$section['id']]['description'] ) ? $sections[$section['id']]['description'] : '';
 		$default = $description ? '<p>' . $description . '</p>' : '';
-		echo apply_filters( 'geobench_settings_sections_callback_' . $this->id, $default );
+		echo apply_filters( 'geobench_' . $this->id . '_sections_callback', $default );
 	}
 
 	/**
-	 * Default register setting callback for page settings.
+	 * Register setting callback.
 	 *
-	 * @param  $setting
+	 * Callback function for sanitizing and validating options before they are updated.
 	 *
-	 * @return array
-	 */
-	public function register_setting_callback( $setting ) {
-		return apply_filters( 'geobench_register_setting_' . $this->id, $setting );
-	}
-
-	/**
-	 * Default validation callback for the page settings fields.
-	 *
-	 * @param  array $settings
+	 * @param  array $setting
 	 *
 	 * @return array
 	 */
-	public function validate( $settings ) {
-		return apply_filters( 'geobench_validate_settings_' . $this->id, $settings, $this->get_settings() );
-	}
+	abstract public function validate( $setting );
 
 }

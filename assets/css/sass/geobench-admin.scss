@@ -1,0 +1,21 @@
+.geobench {
+
+  .geobench-enhanced-select {
+    width: 50%;
+    min-width: 300px;
+    max-width: 500px;
+  }
+
+  .select2 {
+
+    input {
+      box-shadow: none;
+    }
+
+    .select2-selection li {
+      margin-bottom: 0;
+    }
+
+  }
+
+}

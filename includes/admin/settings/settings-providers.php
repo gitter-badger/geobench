@@ -57,6 +57,16 @@ class Providers_Settings extends Settings_Page {
 
 		return apply_filters( 'geobench_add_providers_settings_fields', $fields );
 	}
+
+	/**
+	 * @param array $setting
+	 *
+	 * @return array
+	 */
+	public function validate( $setting ) {
+		return $setting;
+	}
+
 }
 
 return new Providers_Settings();

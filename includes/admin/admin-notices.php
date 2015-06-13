@@ -112,8 +112,8 @@ class Notices {
 		foreach ( $notices as $notice ) {
 			add_action( 'admin_notices', array( $this, $this->notices[ $notice ] ) );
 		}
-		wp_enqueue_style( 'geobench-activation', plugins_url(  '/assets/css/activation.css', GB_PLUGIN_FILE ) );
-		wp_enqueue_script( 'geobench-admin-notices' );
+		//wp_enqueue_style( 'geobench-activation', plugins_url(  '/assets/css/activation.css', GB_PLUGIN_FILE ) );
+		//wp_enqueue_script( 'geobench-admin-notices' );
 	}
 
 	/**

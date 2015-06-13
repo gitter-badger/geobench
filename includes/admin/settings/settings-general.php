@@ -39,10 +39,6 @@ class General_Settings extends Settings_Page {
 	 */
 	public function add_sections() {
 		return apply_filters( 'geobench_add_' . $this->id .'_sections', array(
-			'api' => array(
-				'title' => __( 'General options', 'geobench' ),
-				'description' => __( 'This is a description' )
-			),
 			'content_integration' => array(
 				'title' =>  __( 'Content integration', 'geobench' ),
 				'description' => __( 'This is a description' )
@@ -59,56 +55,87 @@ class General_Settings extends Settings_Page {
 
 		$fields = array();
 
-		$fields['api'] = array(
-			array(
-				'title'         => __( 'GeoBench API', 'geobench' ),
-				'description'   => __( 'Enable REST API', 'geobench' ),
-				'id'            => 'geobench_api_enable',
-				'name'          => 'geobench_' . $this->id . '[api][enable]',
-				'default'       => 'yes',
-				'type'          => 'checkbox'
-			)
-		);
+		if ( $sections = $this->sections ) :
 
-		// Default content groups
-		$content_groups = apply_filters( 'geobench_get_content_groups', array(
-			'posts' => __( 'Posts', 'geobench' )
-		) );
+			$page_id = $this->id;
+			$values = get_option( 'geobench_' . $page_id );
 
-		// Default post types
-		$post_types = get_post_types( array( 'publicly_queryable' => true ) );
-		unset( $post_types['attachment'] );
-		$post_content_types = array();
-		foreach ( $post_types as $post_type ) {
-			$post_type_object = get_post_type_object( $post_type );
-			if ( ! isset( $post_type_object->labels->name ) ) {
-				continue;
-			}
-			$post_content_types[ $post_type ] = $post_type_object->labels->name;
-		}
+			foreach ( $sections as $section => $content ) :
 
-		// Default content subtypes per group (default post types)
-		$content_group_types = apply_filters( 'geobench_get_content_group_subtypes', array(
-			'posts' => $post_content_types
-		) );
+				if( 'content_integration' == $section ) {
 
-		foreach ( $content_group_types as $content_group => $options ) {
-			if ( isset( $content_groups[ $content_group ] ) ) {
-				$fields['content_integration'][] = array(
-					'id'          => 'geobench_content_integration_' . $content_group,
-					'name'        => 'geobench_' . $this->id . '[content_integration][' . $content_group . ']',
-					'title'       => $content_groups[ $content_group ],
-					'description' => sprintf( __( 'Select which content among %s should have geo data.', 'geobench' ), strtolower( $content_groups[ $content_group ] ) ),
-					'type'        => 'select',
-					'multiselect' => 'multiselect',
-					'classes'     => 'geobench-enhanced-select-tags',
-					'options'     => $options,
-					'default'     => 'post'
-				);
-			}
-		}
+					// Default content groups
+					$content_groups = apply_filters( 'geobench_integration_content_groups', array(
+						'posts' => __( 'Posts', 'geobench' )
+					) );
+
+					// Default post types
+					$post_types = get_post_types( array( 'publicly_queryable' => true ) );
+					unset( $post_types['attachment'] );
+					$post_content_types = array();
+					foreach ( $post_types as $post_type ) {
+						$post_type_object = get_post_type_object( $post_type );
+						if ( ! isset( $post_type_object->labels->name ) ) {
+							continue;
+						}
+						$post_content_types[ $post_type ] = $post_type_object->labels->name;
+					}
+
+					// Default content subtypes per group (default post types)
+					$content_group_types = apply_filters( 'geobench_integration_content_group_subtypes', array(
+						'posts' => $post_content_types
+					), $content_groups );
+
+					foreach ( $content_group_types as $content_group => $options ) {
+						if ( isset( $content_groups[ $content_group ] ) ) {
+							$fields[$section][] = array(
+								'type'        => 'select',
+								'multiselect' => 'multiselect',
+								'name'        => 'geobench_'. $page_id . '[' . $section . '][' . $content_group . ']',
+								'id'          => 'geobench-field-content-integration-' . $content_group,
+								'class'       => 'geobench-field geobench-enhanced-select geobench-field-content-integration',
+								'title'       => $content_groups[ $content_group ],
+								'description' => sprintf( __( 'Select which type of %s should carry geo data.', 'geobench' ), strtolower( $content_groups[ $content_group ] ) ),
+								'options'     => $options,
+								'default'     => $content_group == 'posts' ? 'post' : '',
+								'value'       => isset( $values[$section][$content_group] ) ? $values[$section][$content_group] : false
+							);
+						}
+					}
+
+				}
+
+			endforeach;
+		endif;
 
 		return apply_filters( 'geobench_add_' . $this->id . '_fields', $fields );
+	}
+
+	/**
+	 * Register setting callback.
+	 *
+	 * Callback function for sanitizing and validating options before they are updated.
+	 *
+	 * @param  array $setting
+	 *
+	 * @return array
+	 */
+	public function validate( $setting ) {
+
+		$sanitized = array();
+		foreach ( $setting as $option => $value ) :
+
+			if ( 'content_integration ' == $option ) {
+				if ( $value && is_array( $value ) ) {
+					foreach( $value as $subgroup => $subtypes ) {
+						$sanitized[$option][$subgroup] = array_map( 'sanitize_key', $subtypes );
+					}
+				}
+			}
+
+		endforeach;
+
+		return apply_filters( 'geobench_validate_' . $this->id, $sanitized );
 	}
 
 }

@@ -2,10 +2,10 @@
 /**
  * Load assets in administration.
  *
- * @since 1.0.0
- *
  * @package GeoBench/Admin
  */
+
+namespace GeoBench\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -13,15 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * GeoBench assets for admin pages.
- *
- * @since 1.0.0
  */
-class GB_Admin_Assets {
+class Assets {
 
 	/**
-	 * Hook in tabs.
-	 *
-	 * @since 1.0.0
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
@@ -29,74 +25,80 @@ class GB_Admin_Assets {
 	}
 
 	/**
-	 * Enqueue styles
-	 *
-	 * @since 1.0.0
+	 * Register and enqueue styles.
 	 */
 	public function admin_styles() {
-		$screen = get_current_screen();
+
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		if ( in_array( $screen->id, gb_get_screen_ids() ) ) {
-			wp_enqueue_style( 'gb-admin', GB()->plugin_url() . '/assets/styles/admin' . $suffix . '.css', array(), GB_VERSION );
+
+		/**
+		 * Register styles
+		 */
+
+		// Select2
+		wp_register_style(
+			'geobench-select2',
+			GB()->plugin_url() . '/assets/css/vendor/select2' . $suffix . '.css',
+			'',	'4.0.0'
+		);
+
+		// GeoBench admin scripts
+		wp_register_style(
+			'geobench-admin',
+			GB()->plugin_url() . '/assets/css/geobench-admin' . $suffix . '.css',
+			array(
+				'geobench-select2'
+			), GB_VERSION
+		);
+
+		/**
+		 * Enqueue styles
+		 */
+
+		if ( gb_is_admin( get_current_screen() ) ) {
+			wp_enqueue_style( 'geobench-admin' );
 		}
+
 	}
+
 	/**
-	 * Enqueue scripts
-	 *
-	 * @since 1.0.0
+	 * Register and enqueue scripts.
 	 */
 	public function admin_scripts() {
 
-		$screen = get_current_screen();
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		/**
 		 * Register scripts
 		 */
 
-		// General admin pages
-		wp_register_script( 'geobench-admin', GB()->plugin_url() . '/assets/js/admin/admin' . $suffix . '.js', array(
-			'jquery',
-			'jquery-ui-sortable',
-			'jquery-ui-core',
-			'jquery-tiptip',
-			'select2'
-		), GB_VERSION );
-		// Settings pages
-		wp_register_script( 'geobench-admin-settings', GB()->plugin_url() . '/assets/scripts/admin/settings' . $suffix . '.js', array(
-			'jquery',
-			'jquery-ui-sortable',
-			'select2',
-			'gb-admin'
-		), GB()->version, true );
-		// Meta box: Geo post type
-		wp_register_script( 'geobench-admin-meta-boxes', GB()->plugin_url() . '/assets/js/admin/meta-boxes-geo' . $suffix . '.js', array(
-			'jquery',
-			'jquery-ui-sortable',
-			'gb-admin'
-		), GB_VERSION );
 		// jQuery TipTip
-		wp_register_script( 'jquery-tiptip', GB()->plugin_url() . '/assets/js/jquery-tiptip/jquery.tipTip' . $suffix . '.js', array(
+		wp_register_script( 'geobench-jquery-tiptip', GB()->plugin_url() . '/assets/js/vendor/jquery.tipTip' . $suffix . '.js', array(
 			'jquery'
 		), '1.3.0', true );
 		// Select2
-		wp_register_script( 'select2', GB()->plugin_url() . '/assets/js/select2/select2' . $suffix . '.js', array(
+		wp_register_script( 'geobench-select2', GB()->plugin_url() . '/assets/js/vendor/select2' . $suffix . '.js', array(
 			'jquery'
 		), '4.0.0' );
+		// General admin pages
+		wp_register_script( 'geobench-admin', GB()->plugin_url() . '/assets/js/geobench-admin' . $suffix . '.js', array(
+			'jquery',
+			'jquery-ui-sortable',
+			'jquery-ui-core',
+			'geobench-jquery-tiptip',
+			'geobench-select2'
+		), GB_VERSION, true );
 
 		/**
 		 * Enqueue scripts
 		 */
 
-		if ( in_array( $screen->id, gb_get_screen_ids() ) ) {
-			wp_enqueue_script( 'geobench-admin-settings' );
-		}
-		if ( in_array( $screen->id, array( 'geo', 'edit-geo', 'map', 'edit-map' ) ) ) {
-			wp_enqueue_script( 'geobench-admin-meta-boxes' );
+		if ( gb_is_admin( get_current_screen() ) ) {
+			wp_enqueue_script( 'geobench-admin' );
 		}
 
 	}
 
 }
 
-return new GB_Admin_Assets();
+return new Assets();

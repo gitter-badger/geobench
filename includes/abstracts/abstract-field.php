@@ -176,19 +176,19 @@ abstract class Field {
 	}
 
 	/**
-	 * Escape array (maybe)
+	 * Escape array (maybe).
 	 *
 	 * Helper function to escape values that could be arrays.
 	 *
-	 * @param  $array
+	 * @param  array|string|bool $maybe_array
 	 *
-	 * @return array|string Always escaped.
+	 * @return array|string|bool Escaped value.
 	 */
-	private function esc_maybe_array( $array ) {
-		if ( ! is_array( $array ) ) {
-			return esc_attr( $array );
+	private function esc_maybe_array( $maybe_array ) {
+		if ( is_array( $maybe_array ) ) {
+			return array_map( 'esc_attr', $maybe_array );
 		} else {
-			return array_map( 'esc_attr', $array );
+			return is_bool( $maybe_array ) ? $maybe_array : esc_attr( $maybe_array );
 		}
 	}
 

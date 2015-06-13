@@ -3,33 +3,20 @@
   "version": "0.1.0",
   "main": "/",
   "license": "GPLv2+",
-  "ignore": [
-    "**/.*",
-    "*.md",
-    "assets/css/sass/*",
-    "assets/css/src/*",
-    "assets/js/src/*",
-    "assets/js/vendor/*",
-	"assets/vendor",
-    "images/src/*",
-    "tests",
-    "bootstrap.php",
-    "Gruntfile.js",
-    "package.json",
-    "composer.json",
-    "phpunit.xml.dist"
-  ],
-  "devDependencies": {},
   "keywords": [
-	"wordpress",
-	"wordpress-plugin",
-	"geo",
-	"gis",
-	"geodata",
-	"geo-data",
-	"map",
-	"maps",
-	"google-maps",
-	"cartography"
-  ]
+    "wordpress",
+    "wordpress-plugin",
+    "geo",
+    "gis",
+    "geodata",
+    "geo-data",
+    "map",
+    "maps",
+    "google-maps",
+    "cartography"
+  ],
+  "devDependencies": {
+    "jquery-tiptip" : "master",
+    "select2" : "~4.0"
+  }
 }

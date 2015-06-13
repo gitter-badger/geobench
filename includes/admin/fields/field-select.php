@@ -20,9 +20,9 @@ class Select extends Field {
 	/**
 	 * Multiselect.
 	 *
-	 * @var string
+	 * @var bool
 	 */
-	public $multiselect = '';
+	public $multiselect = false;
 
 	/**
 	 * Construct.
@@ -30,7 +30,8 @@ class Select extends Field {
 	 * @param $field
 	 */
 	public function __construct( $field ) {
-		$this->multiselect = isset( $field['multiselect'] ) ? $field['multiselect'] : '';
+		$multiselect = isset( $field['multiselect'] ) ? $field['multiselect'] : '';
+		$this->multiselect = $multiselect == 'multiselect' ? true : false;
 		parent::__construct( $field );
 	}
 
@@ -41,14 +42,18 @@ class Select extends Field {
 
 		$this->get_wrapper( $this->context, 'start' );
 
+		if ( $this->multiselect === true ) {
+			echo '<p class="description">' . wp_kses_post( $this->description ) . ' ' . $this->tooltip . '</p><br/>';
+		}
+
 		?>
 		<select
-			name="<?php echo $this->name; ?><?php if ( $this->multiselect == 'multiselect' ) echo '[]'; ?>"
+			name="<?php echo $this->name; ?><?php if ( $this->multiselect === true ) echo '[]'; ?>"
 			id="<?php echo $this->id; ?>"
 			style="<?php echo $this->css; ?>"
 			class="<?php echo $this->class; ?>"
 			<?php echo implode( ' ', $this->attributes ); ?>
-			<?php echo ( 'multiselect' == $this->multiselect ) ? 'multiple="multiple"' : ''; ?>
+			<?php echo ( $this->multiselect === true ) ? 'multiple="multiple"' : ''; ?>
 			>
 			<?php foreach ( $this->options as $key => $val ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>"
@@ -62,7 +67,10 @@ class Select extends Field {
 			<?php endforeach; ?>
 		</select>
 		<?php
-		echo '<span class="description">' . wp_kses_post( $this->description ) . '</span>';
+
+		if ( $this->multiselect === false ) {
+			echo '<span class="description">' . wp_kses_post( $this->description ) . ' ' . $this->tooltip . '</span>';
+		}
 
 		$this->get_wrapper( $this->context, 'end' );
 

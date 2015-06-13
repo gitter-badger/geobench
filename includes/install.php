@@ -61,32 +61,43 @@ class Install {
      */
     private static function create_options() {
 
-	    include_once 'admin/admin-settingsold.php';
+	    include_once 'admin/admin-settings.php';
 
-	    $settings = Settings::get_settings_pages();
+	    $settings_pages = Settings::get_settings();
 
-	    foreach ( $settings as $section ) {
+	    foreach ( $settings_pages as $page_id => $settings ) {
 
-		    if ( ! method_exists( $section, 'get_settings' ) ) {
-			    continue;
-		    }
+		    $default = '';
 
-		    $subsections = array_unique( array_merge( array( '' ), array_keys( $section->get_sections() ) ) );
+			if ( isset( $settings['sections'] ) ) {
 
-		    foreach ( $subsections as $subsection ) {
+				if ( $settings['sections'] && is_array( $settings['sections'] ) ) {
 
-			    foreach ( $section->get_settings( $subsection ) as $value ) {
-				    if ( isset( $value['default'] ) && isset( $value['id'] ) ) {
-					    // @see https://codex.wordpress.org/Function_Reference/add_option
-					    $autoload = isset( $value['autoload'] ) ? (bool) $value['autoload'] : true;
-					    add_option( $value['id'], $value['default'], '', ( $autoload ? 'yes' : 'no' ) );
-				    }
+					foreach ( $settings['sections'] as $section_id => $section ) {
 
-			    } // loop fields/options in section
+						if ( isset( $section['fields'] ) ) {
 
-		    } // loop sections in pages
+							if ( $section['fields'] && is_array( $section['fields'] ) ) {
 
-	    } // loop settings pages
+								foreach ( $section['fields'] as $key => $value ) {
+
+									$default[$section_id][$key] = isset( $value['value'] ) ? $value['value'] : ( isset( $value['default'] ) ? isset( $value['default'] ) : '' );
+
+								} // loop fields for saved values, fallback to default values
+
+							} // are fields non empty?
+
+						} // are there any fields?
+
+					} // loop sections
+
+				} // are sections non empty?
+
+			} // are there settings sections?
+
+			add_option( 'geobench_' . $page_id, $default, true );
+
+		} // loop settings
 
     }
 
@@ -139,6 +150,7 @@ CREATE TABLE {$coordinates} (
   lat DECIMAL(9,6) NOT NULL default 0,
   lng DECIMAL(9,6) NOT NULL default 0,
   PRIMARY KEY (geo_id, lat, lng),
+  UNIQUE INDEX geo_id (geo_id),
   INDEX latlng (lat ASC, lng ASC)
 ) {$collate};
 
@@ -162,6 +174,7 @@ CREATE TABLE {$relationships} (
   object_type VARCHAR(20) NOT NULL,
   PRIMARY KEY (geo_id, object_id, object_type),
   UNIQUE INDEX geo_id (geo_id ASC),
+  INDEX object (object_id ASC, object_type ASC),
   INDEX object_type (object_type ASC)
 ) {$collate};
 		";

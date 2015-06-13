@@ -1,0 +1,10 @@
+.geobench .geobench-enhanced-select {
+  width: 50%;
+  min-width: 300px;
+  max-width: 500px; }
+.geobench .select2 input {
+  box-shadow: none; }
+.geobench .select2 .select2-selection li {
+  margin-bottom: 0; }
+
+/*# sourceMappingURL=geobench-admin.css.map */
