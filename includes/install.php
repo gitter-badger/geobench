@@ -59,15 +59,16 @@ class Install {
      *
      * @access private
      */
-    private static function create_options() {
+    public static function create_options() {
 
 	    include_once 'admin/admin-settings.php';
+		$geobench_settings = new Settings;
+	    $settings_pages = $geobench_settings::get_settings();
 
-	    $settings_pages = Settings::get_settings();
+		$default = '';
+	    foreach ( $settings_pages as $settings_page => $settings ) {
 
-	    foreach ( $settings_pages as $page_id => $settings ) {
-
-		    $default = '';
+		    $group = 'geobench_' . $settings_page;
 
 			if ( isset( $settings['sections'] ) ) {
 
@@ -79,12 +80,16 @@ class Install {
 
 							if ( $section['fields'] && is_array( $section['fields'] ) ) {
 
-								foreach ( $section['fields'] as $key => $value ) {
+								foreach ( $section['fields'] as $key => $field ) {
 
-									$saved_value   = isset( $value['value'] )   ? $value['value']   : '';
-									$default_value = isset( $value['default'] ) ? $value['default'] : '';
+									$saved_value   = isset( $field['value']   ) ? $field['value']   : '';
+									$default_value = isset( $field['default'] ) ? $field['default'] : '';
 
-									$default[$section_id][$key] = $saved_value ? $saved_value : $default_value;
+									if ( is_int( $key ) ) {
+										$default[$section_id] = $saved_value ? $saved_value : $default_value;
+									} else {
+										$default[$section_id][$key] = $saved_value ? $saved_value : $default_value;
+									}
 
 								} // loop fields for saved values, fallback to default values
 
@@ -98,7 +103,8 @@ class Install {
 
 			} // are there settings sections?
 
-		    add_option( 'geobench_' . $page_id, $default, '', true );
+		    add_option( $group, $default, '', true );
+		    $default = '';
 
 		} // loop settings
 

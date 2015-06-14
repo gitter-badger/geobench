@@ -42,7 +42,8 @@ class General_Settings extends Settings_Page {
 			'content_integration' => array(
 				'title' =>  __( 'Content integration', 'geobench' ),
 				'description' => __(
-					'GeoBench can attach geo data to other content. You can choose here which WordPress items should integrate with GeoBench.',
+					'GeoBench can attach geo data to other content.
+					 You can choose here which WordPress items should integrate with GeoBench.',
 					'geobench' )
 			)
 		) );
@@ -51,11 +52,13 @@ class General_Settings extends Settings_Page {
 	/**
 	 * Add fields.
 	 *
+	 * @uses get_option() to retrieve any saved values.
+	 *
 	 * @return array
 	 */
 	public function add_fields() {
 
-		$fields = array();
+		$fields = '';
 
 		if ( $sections = $this->sections ) :
 
@@ -64,12 +67,7 @@ class General_Settings extends Settings_Page {
 
 			foreach ( $sections as $section => $content ) :
 
-				if( 'content_integration' == $section ) {
-
-					// Default content groups
-					$content_groups = apply_filters( 'geobench_integration_content_groups', array(
-						'posts' => __( 'Posts', 'geobench' )
-					) );
+				if ( 'content_integration' == $section ) :
 
 					// Default post types
 					$post_types = get_post_types( array( 'publicly_queryable' => true ) );
@@ -80,34 +78,40 @@ class General_Settings extends Settings_Page {
 						if ( ! isset( $post_type_object->labels->name ) ) {
 							continue;
 						}
-						$post_content_types[ $post_type ] = $post_type_object->labels->name;
+						$post_content_types[$post_type] = $post_type_object->labels->name;
 					}
 
-					// Default content subtypes per group (default post types)
-					$content_group_types = apply_filters( 'geobench_integration_content_group_subtypes', array(
-						'posts' => $post_content_types
-					), $content_groups );
+					// Default content groups
+					$content_groups = apply_filters( 'geobench_content_integration', array(
+						'posts' => array(
+							'label' => __( 'Posts', 'geobench' ),
+							'types' => $post_content_types
+						)
+					) );
 
-					foreach ( $content_group_types as $content_group => $options ) {
-						if ( isset( $content_groups[ $content_group ] ) ) {
-							$fields[$section][] = array(
-								'type'        => 'select',
-								'multiselect' => 'multiselect',
-								'name'        => 'geobench_'. $page_id . '[' . $section . '][' . $content_group . ']',
-								'id'          => 'geobench-field-content-integration-' . $content_group,
-								'class'       => 'geobench-field geobench-enhanced-select geobench-field-content-integration',
-								'title'       => $content_groups[ $content_group ],
-								'description' => sprintf( __( 'Select which type of %s should carry geo data.', 'geobench' ), strtolower( $content_groups[ $content_group ] ) ),
-								'options'     => $options,
-								'default'     => $content_group == 'posts' ? 'post' : '',
-								'value'       => isset( $values[$section][$content_group] ) ? $values[$section][$content_group] : ''
-							);
+					foreach ( $content_groups as $content_group => $args ) {
+						if ( isset( $args['label'] ) && isset( $args['types'] ) ) {
+							if ( is_array( $args['types'] ) ) {
+								$fields[$section][$content_group] = array(
+									'type'        => 'select',
+									'multiselect' => 'multiselect',
+									'name'        => 'geobench_'. $page_id . '[' . $section . '][' . $content_group . ']',
+									'id'          => 'geobench-field-content-integration-' . $content_group,
+									'class'       => 'geobench-field geobench-enhanced-select geobench-field-content-integration',
+									'title'       => $args['label'],
+									'description' => sprintf( __( 'Select which type of %s should carry geo data.', 'geobench' ), strtolower( $content_group ) ),
+									'options'     => $args['types'],
+									'default'     => $content_group == 'posts' ? 'post' : '',
+									'value'       => isset( $values[$section][$content_group] ) ? $values[$section][$content_group] : ''
+								);
+							}
 						}
 					}
 
-				}
+				endif;
 
 			endforeach;
+
 		endif;
 
 		return apply_filters( 'geobench_add_' . $this->id . '_fields', $fields );

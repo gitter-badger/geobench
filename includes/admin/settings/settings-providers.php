@@ -52,7 +52,7 @@ class Providers_Settings extends Settings_Page {
 		$fields = array();
 
 		$fields['maps'] = array(
-			array()
+			
 		);
 
 		return apply_filters( 'geobench_add_providers_settings_fields', $fields );

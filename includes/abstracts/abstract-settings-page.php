@@ -94,7 +94,7 @@ abstract class Settings_Page {
 					'title'         => $content['title'],
 					'description'   => $content['description'],
 					'callback'      => array( $this, 'add_settings_section_callback' ),
-					'fields'        => isset( $this->fields[$id] ) ? $this->fields[$id] : array()
+					'fields'        => isset( $this->fields[$id] ) ? $this->fields[$id] : ''
 				);
 			}
 		}

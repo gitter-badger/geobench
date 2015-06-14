@@ -187,7 +187,7 @@ if ( ! class_exists( 'GeoBench' ) ) :
 		 */
 		public function register_settings() {
 			$settings = new GeoBench\Admin\Settings;
-			$settings->register_settings( $settings->get_settings() );
+			$settings->register_settings( $settings::get_settings() );
 		}
 
 		/**

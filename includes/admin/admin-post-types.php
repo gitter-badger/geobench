@@ -28,8 +28,6 @@ class Post_Types {
 	/**
 	 * Change title boxes in admin.
 	 *
-	 * Replaces 'Title' with 'Description'.
-	 *
 	 * @param  string $text
 	 * @param  object $post
 	 *

@@ -41,7 +41,7 @@ class Settings {
 		// Extend
 		do_action( 'geobench_load_settings_pages' );
 		// Get settings
-		self::$settings = apply_filters( 'geobench_get_settings', array() );
+		self::$settings = apply_filters( 'geobench_get_settings', self::$settings );
 	}
 
 	/**
