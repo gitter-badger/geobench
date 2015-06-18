@@ -61,6 +61,7 @@ class Install {
      */
     public static function create_options() {
 
+	    GB()->load_fields_api();
 	    include_once 'admin/admin-settings.php';
 		$geobench_settings = new Settings;
 	    $settings_pages = $geobench_settings::get_settings();

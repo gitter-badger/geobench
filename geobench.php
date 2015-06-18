@@ -186,6 +186,7 @@ if ( ! class_exists( 'GeoBench' ) ) :
 		 * @uses GeoBench\Admin\Settings to handle WordPress Settings API.
 		 */
 		public function register_settings() {
+			include_once 'includes/admin/admin-settings.php';
 			$settings = new GeoBench\Admin\Settings;
 			$settings->register_settings( $settings::get_settings() );
 		}
@@ -286,7 +287,7 @@ if ( ! class_exists( 'GeoBench' ) ) :
 				include_once 'includes/admin/admin-post-types.php';
 				// Admin classes only needed during non-ajax requests
 				if ( ! $this->is_request( 'ajax' ) ) {
-					$this->include_fields();
+					$this->load_fields_api();
 					include_once 'includes/admin/admin-settings.php';
 					include_once 'includes/admin/admin-menus.php';
 					include_once 'includes/admin/admin-welcome.php';
@@ -317,7 +318,7 @@ if ( ! class_exists( 'GeoBench' ) ) :
 		 *
 		 * Includes input fields for settings and meta-boxes.
 		 */
-		public function include_fields() {
+		public function load_fields_api() {
 			// Abstract model
 			include_once 'includes/abstracts/abstract-field.php';
 			// Core fields
@@ -349,6 +350,7 @@ if ( ! class_exists( 'GeoBench' ) ) :
 			$this->geometry_factory  = new GeoBench\Geometry_Factory();
 			$this->map_factory       = new GeoBench\Map_Factory();
 			if ( $this->is_request( 'admin' ) ) {
+				$this->load_fields_api();
 				$this->field_factory = new GeoBench\Admin\Field_Factory();
 			}
 

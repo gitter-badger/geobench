@@ -27,7 +27,8 @@
 	],
     "minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4"
+		"php": ">=5.4",
+		"wpupdatephp/wp-update-php": "dev-master"
 	},
   "require-dev": {
     "antecedent/patchwork": "1.2.*",
