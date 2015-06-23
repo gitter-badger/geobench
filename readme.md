@@ -1,5 +1,7 @@
 # GeoBench
 
+[![Join the chat at https://gitter.im/geobench/geobench](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/geobench/geobench?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 An extensible toolkit to manage geo data and maps with WordPress.
 
 **This project is currently in alpha and the plugin is broken.**
